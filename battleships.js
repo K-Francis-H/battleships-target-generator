@@ -40,26 +40,44 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	ctx.fillStyle = "red";
 	let ships = [CARRIER, BATTLESHIP, CRUISER, SUBMARINE, DESTROYER];
+	let positions = [];
 	for(let i=0; i < ships.length; i++){
+		//TODO check for intersection
 		let orientation = getRandomInt(VERTICAL, HORIZONTAL+1);
 		//we adjust random placement to be within region where ship will not overflow the map 
 		//with its orientation by subtracting its length from the grid length
 		if(orientation === VERTICAL){
+
+			//check that ship is not intersecting any others, and keep rolling the dice til it isnt
+			let p = getPosition([getRandomInt(0,10), getRandomInt(0,8-ships[i])], ships[i], VERTICAL);
+			while(!checkShipPosition(positions, p)){
+				p = getPosition([getRandomInt(0,10), getRandomInt(0,8-ships[i])], ships[i], VERTICAL);
+			}
+			positions.push(p);
+
 			placeShip(
 				ctx,
-				[getRandomInt(0,10), getRandomInt(0,8-ships[i])],
+				p[0],//[getRandomInt(0,10), getRandomInt(0,8-ships[i])],
 				ships[i],
 				VERTICAL
 			);
 		}else{
+			//check that ship is not intersecting any others, and keep rolling the dice til it isnt
+			let p = getPosition([getRandomInt(0,10-ships[i]),getRandomInt(0,8)], ships[i], HORIZONTAL);
+			while(!checkShipPosition(positions, p)){
+				p = getPosition([getRandomInt(0,10-ships[i]),getRandomInt(0,8)], ships[i], HORIZONTAL);
+			}
+			positions.push(p);
+
 			placeShip(
 				ctx,
-				[getRandomInt(0,10-ships[i]),getRandomInt(0,8)],
+				p[0],//[getRandomInt(0,10-ships[i]),getRandomInt(0,8)],
 				ships[i],
 				HORIZONTAL
 			);
 		}
 	}
+	console.log(positions);
 
 });
 
@@ -74,6 +92,38 @@ function placeShip(ctx, start, size, orientation){
 		ctx.arc(xp, yp, 45, 0, 2*Math.PI);
 		ctx.fill();
 	}
+}
+
+function getPosition(start, size, orientation){
+	console.log("getPosition()");
+	console.log(start);
+	console.log(size);
+	let pos = [];
+	pos.push(start);
+	for(let i=0; i < size; i++){
+		if(orientation === VERTICAL){
+			pos.push([start[0], start[1]+i]);
+		}else{
+			pos.push([start[0], start[1]]);
+		}
+	}
+	return pos;
+}
+
+//not efficient but there are only 5 ships
+function checkShipPosition(positions, pos){
+
+	for(let i=0; i < positions.length; i++){
+		for(j=0; j < positions[i].length; j++){
+			let p = positions[i][j];
+			for(k=0; k < pos.length; k++){
+				if(p[0] === pos[k][0] && p[1] === pos[k][1]){
+					return false;
+				}
+			}
+		}
+	}
+	return true;
 }
 
 function getRandomInt(min, max) {
