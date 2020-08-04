@@ -99,12 +99,12 @@ function getPosition(start, size, orientation){
 	console.log(start);
 	console.log(size);
 	let pos = [];
-	pos.push(start);
+	//pos.push(start);
 	for(let i=0; i < size; i++){
 		if(orientation === VERTICAL){
 			pos.push([start[0], start[1]+i]);
 		}else{
-			pos.push([start[0], start[1]]);
+			pos.push([start[0]+i, start[1]]);
 		}
 	}
 	return pos;
