@@ -1,0 +1,45 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<script>
+		document.addEventListener("DOMContentLoaded", function(){
+			let ctx = document.getElementById("canvas").getContext("2d");;
+
+			let centerx = ctx.canvas.width/2;
+			let centery = ctx.canvas.height/2;
+
+			//draw outer circles and borders ("black" circles)
+			drawCircle(400, "black");
+			drawCircle(398, "white");
+			drawCircle(300, "black");
+			drawCircle(298, "yellow");
+			drawCircle(200, "black");
+			drawCircle(198, "cyan");
+			drawCircle(100, "black");
+			
+
+			//draw cross lines
+			ctx.moveTo(centerx,0);
+			ctx.lineTo(centerx,centery*2);
+
+			ctx.moveTo(0,centery);
+			ctx.lineTo(centerx*2,centery);
+
+			ctx.stroke();
+
+			//draw bullseye
+			drawCircle(98, "red");
+
+			function drawCircle(rad, color){
+				ctx.fillStyle = color;
+				ctx.beginPath();
+				ctx.arc(centerx, centery, rad, 0, 2*Math.PI);
+				ctx.fill();
+			}
+		});
+		
+	</script>
+</head>
+<body>
+	<canvas id="canvas" width=800 height=800></canvas>
+</body>
